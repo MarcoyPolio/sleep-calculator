@@ -445,6 +445,83 @@ const css = `
     letter-spacing: 0.1em; text-transform: uppercase;
   }
 
+  /* ── EMAIL CAPTURE ── */
+  .sleep-ec {
+    margin-top: 36px; padding: 30px 28px; border-radius: 20px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--accent-border);
+    position: relative; overflow: hidden;
+  }
+  .sleep-ec::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent-border), transparent);
+  }
+  .sleep-ec-glow {
+    position: absolute; bottom: -50px; left: -50px;
+    width: 200px; height: 200px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(123,156,255,0.06), transparent 70%);
+    pointer-events: none;
+  }
+  .sleep-ec-eyebrow {
+    font-size: 10px; font-weight: 600; letter-spacing: 0.28em;
+    text-transform: uppercase; color: var(--accent); margin-bottom: 10px;
+  }
+  .sleep-ec-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px; font-weight: 500; color: var(--moon);
+    line-height: 1.2; margin-bottom: 8px;
+  }
+  .sleep-ec-title em { color: var(--accent); font-style: italic; }
+  .sleep-ec-sub { font-size: 13px; color: var(--moon-dim); line-height: 1.7; margin-bottom: 18px; }
+  .sleep-ec-bullets { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+  .sleep-ec-bullet { display: flex; align-items: flex-start; gap: 9px; font-size: 13px; color: var(--moon-mid); }
+  .sleep-ec-check {
+    width: 17px; height: 17px; border-radius: 50%;
+    background: rgba(123,156,255,0.12); border: 1px solid var(--accent-border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 9px; font-weight: 700; color: var(--accent);
+    flex-shrink: 0; margin-top: 1px;
+  }
+  .sleep-ec-form { display: flex; gap: 8px; margin-bottom: 10px; }
+  .sleep-ec-input {
+    flex: 1; background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border); border-radius: 11px;
+    padding: 13px 16px; color: var(--moon);
+    font-family: 'DM Sans', sans-serif; font-size: 15px;
+    outline: none; transition: all 0.2s; min-height: 48px;
+  }
+  .sleep-ec-input:focus {
+    border-color: var(--accent-border);
+    background: rgba(123,156,255,0.05);
+  }
+  .sleep-ec-input::placeholder { color: #2a3050; }
+  .sleep-ec-btn {
+    padding: 13px 20px; border-radius: 11px; border: none;
+    background: linear-gradient(135deg, #5a7de0, var(--accent));
+    color: #fff; font-family: 'DM Sans', sans-serif;
+    font-size: 13px; font-weight: 600; cursor: pointer;
+    transition: all 0.2s; min-height: 48px; white-space: nowrap;
+  }
+  .sleep-ec-btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(123,156,255,0.3); }
+  .sleep-ec-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+  .sleep-ec-lead { font-size: 11px; color: var(--accent); font-weight: 500; margin-bottom: 8px; }
+  .sleep-ec-privacy { font-size: 11px; color: #1e2240; margin-top: 6px; }
+  .sleep-ec-success {
+    padding: 24px; border-radius: 14px; text-align: center;
+    background: rgba(90,170,120,0.08); border: 1px solid var(--green-border);
+    animation: fadeUp 0.3s ease;
+  }
+  .sleep-ec-success-icon { font-size: 36px; margin-bottom: 10px; display: block; }
+  .sleep-ec-success-text { font-family: 'Playfair Display', serif; font-size: 20px; color: var(--green); margin-bottom: 4px; }
+  .sleep-ec-success-sub { font-size: 13px; color: var(--moon-dim); }
+  .sleep-ec-err { font-size: 12px; color: #e06060; margin-top: 8px; }
+  @media (max-width: 480px) {
+    .sleep-ec { padding: 22px 18px; }
+    .sleep-ec-form { flex-direction: column; }
+    .sleep-ec-btn { width: 100%; }
+    .sleep-ec-input { font-size: 16px; }
+  }
+
   /* ══════════════════════════════════
      MOBILE — 480px and below
      ══════════════════════════════════ */
@@ -527,6 +604,79 @@ const FAQ_ITEMS = [
   { q:"Does sleep affect weight loss and metabolism?", a:"Yes — significantly. Sleep deprivation increases ghrelin (the hunger hormone) and decreases leptin (the satiety hormone), leading to increased appetite of up to 24% more calories per day. Poor sleep also reduces insulin sensitivity and impairs fat metabolism. Consistent 7–9 hour sleep supports both weight management and overall metabolic health." },
   { q:"What is the best sleep schedule for health?", a:"The best sleep schedule is consistent: same bedtime and wake time every day, even on weekends. Your circadian rhythm — the internal 24-hour clock — works best with regularity. Irregular sleep timing is linked to higher rates of obesity, depression, and cardiovascular disease, independent of total sleep duration." },
 ];
+
+/* ── EMAIL CAPTURE ── */
+const SLEEP_FORM_ACTION = "https://formspree.io/f/mykllzge";
+
+function SleepEmailCapture() {
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState("idle");
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    if (!email || !email.includes("@")) return;
+    setStatus("loading");
+    try {
+      const res = await fetch(SLEEP_FORM_ACTION, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({ email, source: "sleep-calculator" }),
+      });
+      setStatus(res.ok ? "success" : "error");
+    } catch { setStatus("error"); }
+  }
+
+  return (
+    <div className="sleep-ec">
+      <div className="sleep-ec-glow" />
+      {status === "success" ? (
+        <div className="sleep-ec-success">
+          <span className="sleep-ec-success-icon">✅</span>
+          <div className="sleep-ec-success-text">You're in! Sleep tight.</div>
+          <div className="sleep-ec-success-sub">Check your inbox for the 7-Night Quick-Start Guide. 🌙</div>
+        </div>
+      ) : (
+        <>
+          <div className="sleep-ec-eyebrow">🌙 Free Weekly Newsletter</div>
+          <div className="sleep-ec-title">
+            Sleep better, <em>starting tonight.</em>
+          </div>
+          <div className="sleep-ec-sub">
+            Evidence-based sleep tips, recovery science, and habits that actually stick — delivered weekly, free.
+          </div>
+          <div className="sleep-ec-bullets">
+            {[
+              "Science-backed sleep hacks you can use tonight",
+              "The sleep habits most people get completely wrong",
+              "Exclusive discounts on health tools & guides",
+            ].map((b, i) => (
+              <div className="sleep-ec-bullet" key={i}>
+                <span className="sleep-ec-check">✓</span>
+                <span>{b}</span>
+              </div>
+            ))}
+          </div>
+          <form className="sleep-ec-form" onSubmit={handleSubmit}>
+            <input
+              className="sleep-ec-input"
+              type="email"
+              placeholder="Your email address…"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              required
+            />
+            <button className="sleep-ec-btn" type="submit" disabled={status === "loading"}>
+              {status === "loading" ? "…" : "Join →"}
+            </button>
+          </form>
+          <div className="sleep-ec-lead">+ Free 7-Night Quick-Start Guide included</div>
+          {status === "error" && <div className="sleep-ec-err">Something went wrong. Please try again.</div>}
+          <div className="sleep-ec-privacy">🔒 No spam, ever. Unsubscribe anytime.</div>
+        </>
+      )}
+    </div>
+  );
+}
 
 /* ── FAQ COMPONENT ── */
 function FAQ() {
@@ -946,6 +1096,7 @@ export default function App() {
           {tab==="wake" && <WakeCalc />}
           {tab==="debt" && <SleepDebt />}
 
+          <SleepEmailCapture />
           <GumroadCTA />
           <FAQ />
         </main>
