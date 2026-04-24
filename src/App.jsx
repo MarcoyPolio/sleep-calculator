@@ -437,6 +437,28 @@ const css = `
   }
   .faq-item.open .faq-a { max-height: 300px; padding: 0 18px 16px; }
 
+  /* ── CROSS-LINKS ── */
+  .crosslinks {
+    margin-top: 36px; padding: 28px; border-radius: 20px;
+    background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.07);
+  }
+  .crosslinks-label {
+    font-size: 10px; font-weight: 600; letter-spacing: 0.25em;
+    text-transform: uppercase; color: var(--moon-dim);
+    margin-bottom: 16px; text-align: center;
+  }
+  .crosslinks-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .crosslink-card {
+    padding: 18px; border-radius: 14px; text-decoration: none;
+    border: 1px solid rgba(255,255,255,0.07); background: rgba(255,255,255,0.02);
+    transition: all 0.25s; display: block;
+  }
+  .crosslink-card:hover { transform: translateY(-2px); border-color: var(--accent-border); background: var(--accent-dim); }
+  .crosslink-icon { font-size: 22px; margin-bottom: 8px; display: block; }
+  .crosslink-title { font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 500; color: var(--moon); margin-bottom: 4px; }
+  .crosslink-desc { font-size: 12px; color: var(--moon-dim); line-height: 1.5; font-weight: 300; }
+  @media (max-width: 480px) { .crosslinks-grid { grid-template-columns: 1fr; } }
+
   /* ── FOOTER ── */
   .footer {
     position: relative; z-index: 1;
@@ -701,6 +723,26 @@ function FAQ() {
 }
 
 /* ── SOFT CTA ── */
+function CrossLinks() {
+  return (
+    <div className="crosslinks">
+      <div className="crosslinks-label">More Free Health Tools</div>
+      <div className="crosslinks-grid">
+        <a className="crosslink-card" href="https://calorie-calculator-two-gold.vercel.app" target="_blank" rel="noopener noreferrer">
+          <span className="crosslink-icon">🔥</span>
+          <div className="crosslink-title">Calorie Deficit Calculator</div>
+          <div className="crosslink-desc">Find your daily calorie target, TDEE, macros, and weight loss timeline.</div>
+        </a>
+        <a className="crosslink-card" href="https://bmi-calculator-kcfpnqy5m-marcoypolios-projects.vercel.app" target="_blank" rel="noopener noreferrer">
+          <span className="crosslink-icon">📊</span>
+          <div className="crosslink-title">BMI & Body Fat Calculator</div>
+          <div className="crosslink-desc">Calculate your BMI, body fat percentage, and ideal weight range.</div>
+        </a>
+      </div>
+    </div>
+  );
+}
+
 function GumroadCTA() {
   return (
     <div className="cta-card">
@@ -1096,8 +1138,9 @@ export default function App() {
           {tab==="wake" && <WakeCalc />}
           {tab==="debt" && <SleepDebt />}
 
-          <SleepEmailCapture />
           <GumroadCTA />
+          <SleepEmailCapture />
+          <CrossLinks />
           <FAQ />
         </main>
 
